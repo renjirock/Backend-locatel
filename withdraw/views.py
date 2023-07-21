@@ -20,7 +20,8 @@ class Withdraw(APIView):
             withdraw = Withdraws.objects.create(
                 user=user,
                 value=rf_request.data['value'],
-                token=random.randrange(100000, 999999)
+                token=random.randrange(100000, 999999),
+                is_active=True
             )
             balance = BankAccount.objects.get(user_id=rf_request.user.pk)
             if int(balance.balance) - int(rf_request.data['value']) > 0:
