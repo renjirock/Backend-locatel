@@ -50,14 +50,16 @@ class ConfirmWithdraw(generics.CreateAPIView):
     def get(self, rf_request):
         try:
             withdraw = Withdraws.objects.get(token=rf_request.query_params['token'])
-            if withdraw.created_at + datetime.timedelta(hours=0.5) > timezone.now():
+            if withdraw.created_at + datetime.timedelta(hours=0.5) > timezone.now() and withdraw.is_active == True:
                 balance = BankAccount.objects.get(user_id=withdraw.user_id)
                 balance.balance = int(balance.balance) - int(withdraw.value)
                 balance.save()
-                withdraw.delete()
+                withdraw.is_active = False
+                withdraw.save()
                 return Response({'withdraw': True, 'error': False}, status=status.HTTP_200_OK)
             else:
-                withdraw.delete()
+                withdraw.is_active = False
+                withdraw.save()
                 return Response({'withdraw': False, 'error': True}, status=status.HTTP_200_OK)
 
         except OSError:

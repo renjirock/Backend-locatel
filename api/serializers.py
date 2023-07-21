@@ -74,5 +74,5 @@ class DepositsSerializer(serializers.ModelSerializer):
 class WithdrawSerializer(serializers.ModelSerializer):
     class Meta:
         model = Withdraws
-        fields = ('value', 'created_at')
+        fields = ('value', 'is_active', 'created_at')
 
